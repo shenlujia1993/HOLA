@@ -1,0 +1,22 @@
+setwd("D:/data/")
+
+# read data
+users<-read.csv("D://data//20170823.csv",header = T)
+user_info <- users[,c(3:5)]
+colnames(user_info)<-c("times","amount","last_time")
+user_info$last_time<-as.Date(as.character(user_info$last_time))
+load_time <- as.Date("2017-7-24")
+user_info$recency <- load_time - user_info$last_time
+user_info$recency <- as.numeric(user_info$recency)
+userinfo2<-user_info[,-3]
+
+# transfer data as normal distribution
+zscoredfile <- scale(userinfo2)
+
+# divide users into four groups using normal distributed data
+result <- kmeans(zscoredfile, 4)
+plot(zscoredfile, col = result$cluster)
+
+# divide users into four groups using original data
+result2 <- kmeans(userinfo2, 4)
+plot(userinfo2, col = result$cluster)
